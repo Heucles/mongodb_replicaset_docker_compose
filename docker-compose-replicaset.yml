@@ -1,0 +1,67 @@
+version: '2'
+services:
+  mongo-client:
+    image: mongo:3.4.10
+    ports: 
+      - '30050:27017'
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_DIR}/client:/scripts
+      - ${DATA_DIR}/config:/config
+    
+    command: >-
+      bash -c "./scripts/wait-for-it.sh mongo-master:27017;\
+        ./scripts/wait-for-it.sh mongo-sec-2:27017;\
+        ./scripts/wait-for-it.sh mongo-sec-3:27017;\
+        mongo --host mongo-master -u tom -p 'jerry' < /scripts/replica.js;"
+        
+        
+    depends_on:
+    - mongo-master
+    - mongo-sec-2
+    - mongo-sec-3
+
+  mongo-master:
+    image: mongo:3.4.10
+    command: >-
+      bash -c "chmod 400 /config/mongo-keyfile;\
+        mongod --keyFile /config/mongo-keyfile --replSet my-mongo-set;\
+        mongo < /scripts/create_user.js"
+    ports: 
+      - '30001:27017'
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_DIR}/master/data:/data/db
+      - ${DATA_DIR}/master/scripts:/scripts
+      - ${DATA_DIR}/config:/config
+
+  mongo-sec-2:
+    image: mongo:3.4.10
+    command: >-
+      bash -c "chmod 400 /config/mongo-keyfile && mongod --keyFile /config/mongo-keyfile --replSet my-mongo-set;"
+    ports: 
+      - '30002:27017'
+    depends_on:
+    - mongo-master
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_DIR}/sec-2/data:/data/db
+      - ${DATA_DIR}/config:/config
+
+  mongo-sec-3:
+    image: mongo:3.4.10
+    command: >-
+      bash -c "chmod 400 /config/mongo-keyfile && mongod --keyFile /config/mongo-keyfile --replSet my-mongo-set;"
+    ports: 
+      - '30003:27017'
+    depends_on:
+    - mongo-master
+    - mongo-sec-2
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${DATA_DIR}/sec-3/data:/data/db      
+      - ${DATA_DIR}/config:/config

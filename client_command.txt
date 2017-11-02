@@ -1,0 +1,8 @@
+
+## running the client
+docker run --name mongo_client -d --network mongoreplnode_default mongo:3.4.10
+
+## connectiong with the replica_set
+mongo --host my-mongo-set/mongo-master:27017,mongo-sec-2:27017,mongo-sec-3:27017
+
+

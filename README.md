@@ -1,4 +1,4 @@
-# Esse foi um execício de montar um replicaset mongodb utilizando docker compose.
+# Esse foi um execício de montar um replicaset mongodb utilizando docker compose, isso será continuado e aprimorado
 
 
 ### Pontos importantes:
@@ -6,7 +6,7 @@
 * Há uma priorização de um container para que o mesmo sempre seja o primary quando estiver disponível (https://docs.mongodb.com/manual/tutorial/deploy-replica-set-with-keyfile-access-control/)
 * Este código ainda não está pronto para produção uma vez que os arquivos de chave e user e senha precisam ser gerados dinamicamente e como pode-se observar no arquivo docker compose
     * A estratégia para a implementação utiliza-se de um cliente efêmero que realizará uma configuração forçada no cluster a partir do nó master
-* É necessário definir a variável de ambiente **DATA_DIR** para poder executar o projeto
+* É necessário definir a variável de ambiente **DATA_DIR** com o valor **db_data** para poder executar o projeto
 * Os arquivos dentro da pasta **${DATA_DIR}** se tratam das persistencias do nó do mongo e não devem ser versionados
 
 #### Comandos Auxiliares:
