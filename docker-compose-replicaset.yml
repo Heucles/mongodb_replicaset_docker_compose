@@ -16,7 +16,6 @@ services:
         ./scripts/wait-for-it.sh mongo-sec-3:27017;\
         mongo --host mongo-master -u tom -p 'jerry' < /scripts/replica.js;"
         
-        
     depends_on:
     - mongo-master
     - mongo-sec-2
@@ -26,7 +25,7 @@ services:
     image: mongo:3.4.10
     command: >-
       bash -c "chmod 400 /config/mongo-keyfile;\
-        mongod --keyFile /config/mongo-keyfile --replSet my-mongo-set;\
+        mongod --config /config/mongo-settings.yml;\
         mongo < /scripts/create_user.js"
     ports: 
       - '30001:27017'
@@ -40,7 +39,8 @@ services:
   mongo-sec-2:
     image: mongo:3.4.10
     command: >-
-      bash -c "chmod 400 /config/mongo-keyfile && mongod --keyFile /config/mongo-keyfile --replSet my-mongo-set;"
+      bash -c "chmod 400 /config/mongo-keyfile;\
+        mongod --config /config/mongo-settings.yml"
     ports: 
       - '30002:27017'
     depends_on:
@@ -54,7 +54,8 @@ services:
   mongo-sec-3:
     image: mongo:3.4.10
     command: >-
-      bash -c "chmod 400 /config/mongo-keyfile && mongod --keyFile /config/mongo-keyfile --replSet my-mongo-set;"
+      bash -c "chmod 400 /config/mongo-keyfile;\
+        mongod --config /config/mongo-settings.yml"
     ports: 
       - '30003:27017'
     depends_on:

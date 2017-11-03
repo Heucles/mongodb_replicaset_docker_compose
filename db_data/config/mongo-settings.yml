@@ -1,0 +1,4 @@
+replication:
+   replSetName: 'my-mongo-set'
+security:
+   keyFile: '/config/mongo-keyfile'
